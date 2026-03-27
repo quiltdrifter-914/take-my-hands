@@ -402,8 +402,16 @@
     const STORAGE_KEY = "trpg_helper_progress_v1";
 
     const STORY_NODES = {
+      // 背景图使用方式：
+      // 1. 可填网络图片地址，例如：https://.../bg.jpg
+      // 2. 也可填相对路径，例如：images/home.jpg
+      // 3. 如果某节点不填，则使用默认渐变背景
+      // 建议把图片放进 GitHub 仓库里的 images 文件夹，再写成 images/xxx.jpg
+
       home: {
         id: "home",
+        backgroundImage: "image/zzp-.jpg",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "home",
         title: "欢迎来到实景跑团",
         intro: "你将根据页面提示，在现实场景中寻找线索、完成互动，并在关键节点做出选择。请确保全队一起阅读信息。",
@@ -416,6 +424,8 @@
       },
       stage1: {
         id: "stage1",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第一关：收到匿名纸条",
         info: "你们在起点处发现一张匿名纸条，上面写着：‘真相不在眼前，而在被忽略的角落。’ 请在现实场景中寻找第一个隐藏标记。",
@@ -427,6 +437,8 @@
       },
       stage2: {
         id: "stage2",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第二关：走廊的符号",
         info: "你们在走廊尽头发现了一个奇怪符号，旁边还贴着半张旧照片。照片背面似乎有字。",
@@ -438,6 +450,8 @@
       },
       stage3: {
         id: "stage3",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第二关：储物间的箱子",
         info: "储物间角落有一个带密码锁的旧箱子，旁边贴着一句提示：‘答案藏在你最熟悉的地方。’",
@@ -449,6 +463,8 @@
       },
       stage4: {
         id: "stage4",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第三关：重复出现的名字",
         info: "你们发现多个地点都出现了同一个名字。这个名字可能与失踪的关键人物有关。",
@@ -460,6 +476,8 @@
       },
       stage5: {
         id: "stage5",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第三关：模糊的留言",
         info: "照片背面写着一句模糊留言：‘当钟声响起，记得抬头。’ 你们怀疑某个高处藏有新线索。",
@@ -471,6 +489,8 @@
       },
       stage6: {
         id: "stage6",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第四关：被撕开的记录",
         info: "你们找到了一份被撕开的记录表，上面缺失了关键时间。剩余部分显示有人刻意隐瞒行踪。",
@@ -482,6 +502,8 @@
       },
       stage7: {
         id: "stage7",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第四关：意外的旁观者",
         info: "你们从另一条线索中发现，现场似乎还有一个从未被提起的旁观者。对方可能看到了关键过程。",
@@ -493,6 +515,8 @@
       },
       stage8: {
         id: "stage8",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第五关：拼图完成一半",
         info: "你们已经拿到足够多的碎片信息，但仍缺最后一块：动机。现实场地中还有一个隐藏物件没有被找到。",
@@ -504,6 +528,8 @@
       },
       stage9: {
         id: "stage9",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第六关：接近真相",
         info: "你们逐渐还原出事件经过。现在需要在两条解释中选择更合理的一条，才能进入最终验证。",
@@ -515,6 +541,8 @@
       },
       stage10: {
         id: "stage10",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "stage",
         title: "第七关：最终验证",
         info: "请回到场景中的最终地点，核对最后的机关或提示语。确认无误后，即可进入奖励页面。",
@@ -525,6 +553,8 @@
       },
       reward: {
         id: "reward",
+        backgroundImage: "",
+        backgroundOverlay: "rgba(15, 23, 42, 0.18)",
         type: "reward",
         title: "最终奖励",
         rewardTitle: "恭喜通关",
@@ -731,9 +761,21 @@
       render();
     }
 
+    function applyPageBackground(node) {
+      const hasImage = node && node.backgroundImage && String(node.backgroundImage).trim() !== "";
+      if (hasImage) {
+        const overlay = node.backgroundOverlay || "rgba(15, 23, 42, 0.18)";
+        document.body.style.background = `linear-gradient(${overlay}, ${overlay}), url("${node.backgroundImage}") center / cover no-repeat fixed`;
+      } else {
+        document.body.style.background = "linear-gradient(180deg, var(--bg-1) 0%, var(--bg-2) 55%, var(--bg-1) 100%)";
+      }
+    }
+
     function render() {
       const container = document.getElementById("pageContainer");
       const node = STORY_NODES[state.currentId] || STORY_NODES.home;
+
+      applyPageBackground(node);
 
       renderTopbar();
 
